@@ -1,6 +1,6 @@
 using System;
 
-namespace Entities {
+namespace DevSpace.Common.Entities {
 	public class Event : IEquatable<Event> {
 		public readonly int Id;
 		public readonly string Name;

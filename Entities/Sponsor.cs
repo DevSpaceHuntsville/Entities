@@ -1,6 +1,6 @@
 using System;
 
-namespace Entities {
+namespace DevSpace.Common.Entities {
 	public class Sponsor : IEquatable<Sponsor> {
 		public readonly int Id;
 		public readonly Event SponsoredEvent;

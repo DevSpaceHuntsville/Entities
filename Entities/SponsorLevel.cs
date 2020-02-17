@@ -1,6 +1,6 @@
 using System;
 
-namespace Entities {
+namespace DevSpace.Common.Entities {
 	public class SponsorLevel : IEquatable<SponsorLevel> {
 		public readonly int Id;
 		public readonly int DisplayOrder;

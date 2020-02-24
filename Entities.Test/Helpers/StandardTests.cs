@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Xunit;
 using Xunit.Sdk;
 
@@ -20,38 +18,136 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			typeof( T )
 				.GetFields()
 				.ToList()
-				.ForEach( fi => {
-					try {
-						Assert.Equal(
-							fi.GetValue( original ),
-							fi.GetValue( copy )
-						);
-					} catch( EqualException ) {
-						throw new AssertActualExpectedException(
-							fi.GetValue( original ),
-							fi.GetValue( copy ),
-							$"Field {fi.Name} was different in the copy\nexpected"
-						);
-					}
-				} );
+				.ForEach( fi => AssertEqual(
+					fi.GetValue( original ),
+					fi.GetValue( copy ),
+					$"Field {fi.Name} was different in the copy"
+				) );
 
 			typeof( T )
 				.GetProperties()
 				.ToList()
-				.ForEach( pi => {
-					try {
-						Assert.Equal(
-							pi.GetValue( original ),
-							pi.GetValue( copy )
-						);
-					} catch( EqualException ) {
-						throw new AssertActualExpectedException(
-							pi.GetValue( original ),
-							pi.GetValue( copy ),
-							$"Field {pi.Name} was different in the copy\nexpected"
-						);
-					}
-				}  );
+				.ForEach( pi => AssertEqual(
+					pi.GetValue( original ),
+					pi.GetValue( copy ),
+					$"Property {pi.Name} was different in the copy"
+				) );
+		}
+
+		public static void AllWith<T>() where T : class {
+			T original = GetRandomEntity<T>();
+			T different = GetRandomEntity<T>();
+
+			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
+				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
+				T withed = mi.Invoke( original, new object[] { fi.GetValue( different ) } ) as T;
+
+				Assert.False(
+					ReferenceEquals( original, withed ),
+					$"With{fi.Name} did not produce new reference"
+				);
+
+				AssertNotEqual(
+					fi.GetValue( original ),
+					fi.GetValue( withed ),
+					$"With{fi.Name} did not get new value"
+				);
+
+				typeof( T )
+					.GetFields()
+					.Except( new[] { fi } )
+					.ToList()
+					.ForEach( f =>
+						AssertEqual(
+							f.GetValue( original ),
+							f.GetValue( withed ),
+							$"With{fi.Name} did not retain value for field {f.Name}"
+						)
+					);
+
+				typeof( T )
+					.GetProperties()
+					.ToList()
+					.ForEach( p =>
+						AssertEqual(
+							p.GetValue( original ),
+							p.GetValue( withed ),
+							$"With{fi.Name} did not retain value for field {p.Name}"
+						)
+					);
+			}
+		}
+
+		public static void ObjectEquals<T>() where T : class {
+			T actual = GetRandomEntity<T>() as T;
+			Assert.False( actual.Equals( null ) );
+			Assert.False( actual.Equals( new object() ) );
+		}
+
+		public static void ObjectGetHashCode<T>() where T : class {
+			T original = GetRandomEntity<T>();
+			T different = GetRandomEntity<T>();
+			T copy = UseCopyConstructor<T>( original );
+
+			AssertEqual(
+				original.GetHashCode(),
+				original.GetHashCode(),
+				"GetHashCode is not determanistic"
+			);
+
+			AssertEqual(
+				original.GetHashCode(),
+				copy.GetHashCode(),
+				"GetHashCode: copies do not create same hash code"
+			);
+
+			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
+				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
+
+				AssertNotEqual(
+					original.GetHashCode(),
+					mi.Invoke( original, new object[] { fi.GetValue( different ) } ).GetHashCode(),
+					$"GetHashCode: Changed {fi.Name} did not get new value"
+				);
+			}
+		}
+
+		public static void IEquatableEquals<T>() where T : class {
+			// left.Equals( null ) is false
+			T left = GetRandomEntity<T>();
+			Assert.False( left.Equals( (T)null ) );
+
+			// relf-reference is true
+			Assert.True( left.Equals( left ) );
+
+			// Above cases don't force hash code creation
+			Assert.Null(
+				typeof( T )
+					.GetField( "_hash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance )
+					.GetValue( left )
+			);
+
+			// hash code short circuit
+			T right = UseCopyConstructor<T>( left );
+			typeof( T )
+				.GetField( "_hash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance )
+				.SetValue( right, left.GetHashCode() / 2 );
+			Assert.False( left.Equals( right ) );
+
+			// All values checked
+			T different = GetRandomEntity<T>();
+			right = UseCopyConstructor<T>( left );
+			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
+				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
+
+				T asdf = mi.Invoke( left, new object[] { fi.GetValue( different ) } ) as T;
+				asdf.SetPrivateField( "_hash", left.GetPrivateField( "_hash" ) );
+
+				Assert.False(
+					left.Equals( asdf ),
+					$"IEqualable<{typeof( T ).Name}>.Equals: Changed {fi.Name} did not get make false"
+				);
+			}
 		}
 
 		public static void OperatorEquals<T>() where T : class {
@@ -96,6 +192,30 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			Assert.True( (bool)op.Invoke( null, new object[] { left, null } ) , "left != null was false" );
 			Assert.True( (bool)op.Invoke( null, new object[] { null, right } ), "null != right was false" );
 			Assert.True( (bool)op.Invoke( null, new object[] { left, right } ), "left != right was false" );
+		}
+
+		private static void AssertEqual( object expected, object actual, string userMessage ) {
+			try {
+				Assert.Equal( expected, actual );
+			} catch( EqualException ) {
+				throw new AssertActualExpectedException(
+					expected,
+					actual,
+					userMessage
+				);
+			}
+		}
+
+		private static void AssertNotEqual( object expected, object actual, string userMessage ) {
+			try {
+				Assert.NotEqual( expected, actual );
+			} catch( NotEqualException ) {
+				throw new AssertActualExpectedException(
+					expected,
+					actual,
+					userMessage
+				);
+			}
 		}
 
 		private static T GetRandomEntity<T>() where T : class =>

@@ -26,7 +26,14 @@ namespace DevSpace.Common.Entities {
 		}
 
 		public Company( Company copy )
-			: this( copy.Id, copy.Name, copy.Address, copy.Phone, copy.Website, copy.Twitter ) { }
+			: this(
+				copy?.Id ?? default,
+				copy?.Name,
+				copy?.Address,
+				copy?.Phone,
+				copy?.Website,
+				copy?.Twitter
+			) { }
 
 		public Company WithId( int id ) =>
 			new Company( id, this.Name, this.Address, this.Phone, this.Website, this.Twitter );

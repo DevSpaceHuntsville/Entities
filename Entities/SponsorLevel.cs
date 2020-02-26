@@ -41,7 +41,19 @@ namespace DevSpace.Common.Entities {
 		}
 
 		public SponsorLevel( SponsorLevel copy )
-			: this( copy.Id, copy.DisplayOrder, copy.Name, copy.Cost, copy.DisplayInEmails, copy.DisplayInSidebar, copy.Tickets, copy.Discount, copy.PreConEmail, copy.MidConEmail, copy.PostConEmail ) { }
+			: this(
+				copy?.Id ?? default,
+				copy?.DisplayOrder ?? default,
+				copy?.Name,
+				copy?.Cost ?? default,
+				copy?.DisplayInEmails ?? default,
+				copy?.DisplayInSidebar ?? default,
+				copy?.Tickets ?? default,
+				copy?.Discount ?? default,
+				copy?.PreConEmail ?? default,
+				copy?.MidConEmail ?? default,
+				copy?.PostConEmail ?? default
+		) { }
 
 		public SponsorLevel WithId( int id ) =>
 			new SponsorLevel( id, this.DisplayOrder, this.Name, this.Cost, this.DisplayInEmails, this.DisplayInSidebar, this.Tickets, this.Discount, this.PreConEmail, this.MidConEmail, this.PostConEmail );

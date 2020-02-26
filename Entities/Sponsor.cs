@@ -20,7 +20,12 @@ namespace DevSpace.Common.Entities {
 		}
 
 		public Sponsor( Sponsor copy )
-			: this( copy.Id, copy.SponsoredEvent, copy.SponsoringCompany, copy.SponsorshipLevel ) { }
+			: this(
+				copy?.Id ?? default,
+				copy?.SponsoredEvent,
+				copy?.SponsoringCompany,
+				copy?.SponsorshipLevel
+			) { }
 
 		public Sponsor WithId( int id ) =>
 			new Sponsor( id, this.SponsoredEvent, this.SponsoringCompany, this.SponsorshipLevel );

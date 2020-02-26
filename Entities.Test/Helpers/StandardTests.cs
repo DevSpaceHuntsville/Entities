@@ -36,7 +36,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 
 		public static void AllWith<T>() where T : class {
 			T original = GetRandomEntity<T>();
-			T different = GetRandomEntity<T>();
+			T different = GetDifferentEntity( original );
 
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
 				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
@@ -86,7 +86,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 
 		public static void ObjectGetHashCode<T>() where T : class {
 			T original = GetRandomEntity<T>();
-			T different = GetRandomEntity<T>();
+			T different = GetDifferentEntity( original );
 			T copy = UseCopyConstructor<T>( original );
 
 			AssertEqual(
@@ -135,7 +135,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			Assert.False( left.Equals( right ) );
 
 			// All values checked
-			T different = GetRandomEntity<T>();
+			T different = GetDifferentEntity( left );
 			right = UseCopyConstructor<T>( left );
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
 				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
@@ -152,7 +152,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 
 		public static void OperatorEquals<T>() where T : class {
 			T left = GetRandomEntity<T>();
-			T right = GetRandomEntity<T>();
+			T right = GetDifferentEntity( left );
 
 			T copy = UseCopyConstructor( left );
 			
@@ -174,12 +174,12 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 
 		public static void OperatorNotEquals<T>() where T : class {
 			T left = GetRandomEntity<T>();
-			T right = GetRandomEntity<T>();
+			T right = GetDifferentEntity( left );
 
 			T copy = UseCopyConstructor( left );
 			
 			MethodInfo op =
-				typeof( Event )
+				typeof( T )
 					.GetMethod(
 						"op_Inequality",
 						BindingFlags.Public | BindingFlags.Static
@@ -227,6 +227,28 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				?.GetValue( null )
 				as T
 			?? throw new Exception( $"Could not find RandomEntity creator for {typeof( T ).Name}" );
+
+		private static T GetDifferentEntity<T>( T original ) where T : class {
+			T different = GetRandomEntity<T>();
+
+			foreach( FieldInfo fi in typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance ) ) {
+				object originalValue = fi.GetValue( original );
+				object differentValue = fi.GetValue( different );
+
+				while(
+					originalValue?.Equals( differentValue )
+					??
+					null == differentValue
+				) {
+					differentValue = fi.GetValue( GetRandomEntity<T>() );
+				}
+
+				MethodInfo with = typeof( T ).GetMethod( $"With{fi.Name}" );
+				different = with.Invoke( different, new object[] { differentValue } ) as T;
+			}
+
+			return different;
+		}
 
 		private static T UseCopyConstructor<T>( T original ) where T : class =>
 			typeof( T )

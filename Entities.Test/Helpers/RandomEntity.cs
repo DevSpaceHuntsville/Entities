@@ -11,5 +11,38 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				id: random.Next(),
 				name: random.NextString( 16 )
 			);
+
+		public static Company Company =>
+			new Company(
+				id: random.Next(),
+				name: random.NextString( 51 ),
+				address: random.NextString( 201 ),
+				phone: random.NextString( 21 ),
+				website: random.NextString( 101 ),
+				twitter: random.NextString( 21 )
+			);
+
+		public static SponsorLevel SponsorLevel =>
+			new SponsorLevel(
+				id: random.Next(),
+				displayorder: random.Next(),
+				name: random.NextString( 51 ),
+				cost: random.Next(),
+				displayinemails: random.NextBool(),
+				displayinsidebar: random.NextBool(),
+				tickets: random.Next(),
+				discount: random.Next(),
+				preconemail: random.NextBool(),
+				midconemail: random.NextBool(),
+				postconemail: random.NextBool()
+			);
+
+		public static Sponsor Sponsor =>
+			new Sponsor(
+				id: random.Next(),
+				sponsoredevent: RandomEntity.Event,
+				sponsoringcompany: RandomEntity.Company,
+				sponsorshiplevel: RandomEntity.SponsorLevel
+			);
 	}
 }

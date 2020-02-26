@@ -14,7 +14,10 @@ namespace DevSpace.Common.Entities {
 		}
 
 		public Event( Event copy )
-			: this( copy.Id, copy.Name ) { }
+			: this(
+				copy?.Id ?? default,
+				copy?.Name
+			) { }
 
 		public Event WithId( int id ) =>
 			new Event( id, this.Name );

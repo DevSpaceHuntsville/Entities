@@ -16,6 +16,7 @@ namespace DevSpace.Common.Entities.Test {
 			Assert.Equal( new SponsorLevel(), actual.SponsorshipLevel );
 		}
 
+		[Fact]
 		public override void ObjectToString() {
 			Sponsor actual = Helpers.RandomEntity.Sponsor;
 			Assert.Equal( 

@@ -7,6 +7,9 @@ namespace DevSpace.Common.Entities {
 		public readonly Company SponsoringCompany;
 		public readonly SponsorLevel SponsorshipLevel;
 
+		private Sponsor() :
+			this( default, default, default, default ) { }
+
 		public Sponsor (
 			int id = default,
 			Event sponsoredevent = default,

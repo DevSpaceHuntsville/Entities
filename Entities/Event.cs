@@ -5,6 +5,9 @@ namespace DevSpace.Common.Entities {
 		public readonly int Id;
 		public readonly string Name;
 
+		private Event() :
+			this( default, default ) { }
+
 		public Event (
 			int id = default,
 			string name = default

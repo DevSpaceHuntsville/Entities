@@ -9,6 +9,9 @@ namespace DevSpace.Common.Entities {
 		public readonly string Website;
 		public readonly string Twitter;
 
+		private Company() :
+			this( default, default, default, default, default, default ) { }
+
 		public Company (
 			int id = default,
 			string name = default,

@@ -14,6 +14,9 @@ namespace DevSpace.Common.Entities {
 		public readonly bool MidConEmail;
 		public readonly bool PostConEmail;
 
+		private SponsorLevel() :
+			this( default, default, default, default, default, default, default, default, default, default, default ) { }
+
 		public SponsorLevel (
 			int id = default,
 			int displayorder = default,

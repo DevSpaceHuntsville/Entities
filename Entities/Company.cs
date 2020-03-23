@@ -1,6 +1,8 @@
 using System;
+using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities {
+	[JsonConverter( typeof( CompanyJsonConverter ) )]
 	public class Company : IEquatable<Company> {
 		public readonly int Id;
 		public readonly string Name;
@@ -9,9 +11,7 @@ namespace DevSpace.Common.Entities {
 		public readonly string Website;
 		public readonly string Twitter;
 
-		private Company() :
-			this( default, default, default, default, default, default ) { }
-
+		[JsonConstructor]
 		public Company (
 			int id = default,
 			string name = default,

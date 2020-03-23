@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities {
 	public class Sponsor : IEquatable<Sponsor> {
@@ -7,9 +8,7 @@ namespace DevSpace.Common.Entities {
 		public readonly Company SponsoringCompany;
 		public readonly SponsorLevel SponsorshipLevel;
 
-		private Sponsor() :
-			this( default, default, default, default ) { }
-
+		[JsonConstructor]
 		public Sponsor (
 			int id = default,
 			Event sponsoredevent = default,

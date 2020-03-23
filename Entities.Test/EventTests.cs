@@ -1,4 +1,7 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Xunit;
 
 namespace DevSpace.Common.Entities.Test {
 	public class EventTests : Helpers.StandardEntityTests<Event> {

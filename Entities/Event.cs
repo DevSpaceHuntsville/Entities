@@ -1,12 +1,11 @@
 using System;
+using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities {
+	[JsonConverter( typeof( EventJsonConverter ) )]
 	public class Event : IEquatable<Event> {
 		public readonly int Id;
 		public readonly string Name;
-
-		private Event() :
-			this( default, default ) { }
 
 		public Event (
 			int id = default,

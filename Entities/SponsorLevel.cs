@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities {
 	public class SponsorLevel : IEquatable<SponsorLevel> {
@@ -14,9 +15,7 @@ namespace DevSpace.Common.Entities {
 		public readonly bool MidConEmail;
 		public readonly bool PostConEmail;
 
-		private SponsorLevel() :
-			this( default, default, default, default, default, default, default, default, default, default, default ) { }
-
+		[JsonConstructor]
 		public SponsorLevel (
 			int id = default,
 			int displayorder = default,

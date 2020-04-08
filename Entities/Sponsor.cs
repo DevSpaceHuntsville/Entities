@@ -2,13 +2,13 @@ using System;
 using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities {
+	[JsonConverter( typeof( SponsorJsonConverter ) )]
 	public class Sponsor : IEquatable<Sponsor> {
 		public readonly int Id;
 		public readonly Event SponsoredEvent;
 		public readonly Company SponsoringCompany;
 		public readonly SponsorLevel SponsorshipLevel;
 
-		[JsonConstructor]
 		public Sponsor (
 			int id = default,
 			Event sponsoredevent = default,

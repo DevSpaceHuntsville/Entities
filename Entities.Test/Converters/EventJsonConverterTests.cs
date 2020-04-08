@@ -62,5 +62,10 @@ namespace DevSpace.Common.Entities.Test {
 			Assert.Equal( expected, actual );
 		}
 
+		internal static Event CreateEvent( int i ) =>
+			new Event( i, $"DevSpace {i}" );
+
+		internal static string EventToJson( Event x ) =>
+			$"{{'id':{x.Id},'name':{( null == x.Name ? "null" : $"'{x.Name}'" )}}}";
 	}
 }

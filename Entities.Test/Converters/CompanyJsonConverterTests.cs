@@ -205,5 +205,25 @@ namespace DevSpace.Common.Entities.Test {
 			);
 			Assert.Equal( expected, actual );
 		}
+
+		internal static Company CreateCompany( int i ) =>
+			new Company(
+				id: i,
+				name: $"DevSpace {i}",
+				address: $"Address {i}",
+				phone: $"(123) 456-{i}",
+				website: $"https://www.website.com/{i}",
+				twitter: $"@twit{i}"
+			);
+
+		internal static string CompanyToJson( Company x ) =>
+			$"{{" +
+				$"'id':{x.Id}," +
+				$"'name':{( null == x.Name ? "null" : $"'{x.Name}'" )}," +
+				$"'address':{( null == x.Address ? "null" : $"'{x.Address}'" )}," +
+				$"'phone':{( null == x.Phone ? "null" : $"'{x.Phone}'" )}," +
+				$"'website':{( null == x.Website ? "null" : $"'{x.Website}'" )}," +
+				$"'twitter':{( null == x.Twitter ? "null" : $"'{x.Twitter}'" )}" +
+			$"}}";
 	}
 }

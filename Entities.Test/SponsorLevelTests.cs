@@ -11,10 +11,12 @@ namespace DevSpace.Common.Entities.Test {
 			Assert.Equal( 0, actual.DisplayOrder );
 			Assert.Null( actual.Name );
 			Assert.Equal( 0, actual.Cost );
+			Assert.False( actual.DisplayLink );
 			Assert.False( actual.DisplayInEmails );
 			Assert.False( actual.DisplayInSidebar );
 			Assert.Equal( 0, actual.Tickets );
 			Assert.Equal( 0, actual.Discount );
+			Assert.Equal( 0, actual.TimeOnScreen );
 			Assert.False( actual.PreConEmail );
 			Assert.False( actual.MidConEmail );
 			Assert.False( actual.PostConEmail );

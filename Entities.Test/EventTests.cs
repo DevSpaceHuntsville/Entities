@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
+﻿using System;
 using Xunit;
 
 namespace DevSpace.Common.Entities.Test {
@@ -12,6 +10,8 @@ namespace DevSpace.Common.Entities.Test {
 			Assert.NotNull( actual );
 			Assert.Equal( 0, actual.Id );
 			Assert.Null( actual.Name );
+			Assert.Equal( DateTime.MinValue, actual.StartDate );
+			Assert.Equal( DateTime.MinValue, actual.EndDate );
 		}
 
 		public override void ObjectToString() {

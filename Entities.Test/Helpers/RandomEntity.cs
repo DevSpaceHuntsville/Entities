@@ -9,7 +9,9 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 		public static Event Event =>
 			new Event(
 				id: random.Next(),
-				name: random.NextString( 16 )
+				name: random.NextString( 16 ),
+				startdate: random.NextDateTime(),
+				enddate: random.NextDateTime()
 			);
 
 		public static Company Company =>
@@ -28,10 +30,12 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				displayorder: random.Next(),
 				name: random.NextString( 51 ),
 				cost: random.Next(),
+				displaylink: random.NextBool(),
 				displayinemails: random.NextBool(),
 				displayinsidebar: random.NextBool(),
 				tickets: random.Next(),
 				discount: random.Next(),
+				timeonscreen: random.Next(),
 				preconemail: random.NextBool(),
 				midconemail: random.NextBool(),
 				postconemail: random.NextBool()

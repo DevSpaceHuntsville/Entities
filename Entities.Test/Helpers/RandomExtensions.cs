@@ -6,6 +6,18 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 		public static bool NextBool( this Random random ) =>
 			random.NextDouble() < 0.5;
 
+		public static DateTime NextDateTime( this Random random ) =>
+			random.NextDateTime( DateTime.Today, DateTime.MaxValue );
+		public static DateTime NextDateTime( this Random random, DateTime maxLength ) =>
+			random.NextDateTime( DateTime.Today, maxLength );
+		public static DateTime NextDateTime( this Random random, DateTime minLength, DateTime maxLength ) {
+			if( minLength > maxLength )
+				(minLength, maxLength) = (maxLength, minLength);
+			
+			TimeSpan span = maxLength - minLength;
+			return minLength + TimeSpan.FromMilliseconds( span.TotalMilliseconds * random.NextDouble() );
+		}
+
 		public static string NextString( this Random random ) =>
 			random.NextString( 0, int.MaxValue );
 		public static string NextString( this Random random, int maxLength ) =>

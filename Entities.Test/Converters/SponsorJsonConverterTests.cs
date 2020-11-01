@@ -44,7 +44,9 @@ namespace DevSpace.Common.Entities.Test {
     ""id"": {x.Id},
     ""sponsoredEvent"": {{
       ""id"": {x.SponsoredEvent.Id},
-      ""name"": ""{x.SponsoredEvent.Name}""
+      ""name"": ""{x.SponsoredEvent.Name}"",
+      ""startdate"": ""{EventJsonConverterTests.DateTimeToJsonString( x.SponsoredEvent.StartDate )}"",
+      ""enddate"": ""{EventJsonConverterTests.DateTimeToJsonString( x.SponsoredEvent.EndDate )}""
     }},
     ""sponsoringCompany"": {{
       ""id"": {x.SponsoringCompany.Id},
@@ -59,10 +61,12 @@ namespace DevSpace.Common.Entities.Test {
       ""displayorder"": {x.SponsorshipLevel.DisplayOrder},
       ""name"": ""{x.SponsorshipLevel.Name}"",
       ""cost"": {x.SponsorshipLevel.Cost},
+      ""displaylink"": {x.SponsorshipLevel.DisplayLink.ToString().ToLower()},
       ""displayinemails"": {x.SponsorshipLevel.DisplayInEmails.ToString().ToLower()},
       ""displayinsidebar"": {x.SponsorshipLevel.DisplayInSidebar.ToString().ToLower()},
       ""tickets"": {x.SponsorshipLevel.Tickets},
       ""discount"": {x.SponsorshipLevel.Discount},
+      ""timeonscreen"": {x.SponsorshipLevel.TimeOnScreen},
       ""preconemail"": {x.SponsorshipLevel.PreConEmail.ToString().ToLower()},
       ""midconemail"": {x.SponsorshipLevel.MidConEmail.ToString().ToLower()},
       ""postconemail"": {x.SponsorshipLevel.PostConEmail.ToString().ToLower()}

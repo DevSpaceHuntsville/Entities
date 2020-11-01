@@ -14,10 +14,12 @@ namespace DevSpace.Common.Entities.Test {
 						displayorder: i,
 						name: $"Sponsor Level {i}",
 						cost: i,
+						displaylink: false,
 						displayinemails: false,
 						displayinsidebar: false,
 						tickets: i,
 						discount: i,
+						timeonscreen: i,
 						preconemail: false,
 						midconemail: false,
 						postconemail: false
@@ -33,7 +35,7 @@ namespace DevSpace.Common.Entities.Test {
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
 			SponsorLevel expected = CreateSponsorLevel( 2015 );
-			string json = $@"{{'postconemail':{expected.PostConEmail.ToString().ToLower()},'midconemail':{expected.MidConEmail.ToString().ToLower()},'preconemail':{expected.PreConEmail.ToString().ToLower()},'cost':{expected.Cost},'displayinsidebar':{expected.DisplayInSidebar.ToString().ToLower()},'displayinemails':{expected.DisplayInEmails.ToString().ToLower()},'tickets':{expected.Tickets},'discount':{expected.Discount},'name':'{expected.Name}','displayorder':{expected.DisplayOrder},'id':{expected.Id}}}";;
+			string json = $@"{{'postconemail':{expected.PostConEmail.ToString().ToLower()},'midconemail':{expected.MidConEmail.ToString().ToLower()},'preconemail':{expected.PreConEmail.ToString().ToLower()},'cost':{expected.Cost},'displayinsidebar':{expected.DisplayInSidebar.ToString().ToLower()},'displayinemails':{expected.DisplayInEmails.ToString().ToLower()},'tickets':{expected.Tickets},'discount':{expected.Discount},'name':'{expected.Name}','displayorder':{expected.DisplayOrder},'id':{expected.Id},'timeonscreen':{expected.TimeOnScreen},'displaylink':{expected.DisplayLink.ToString().ToLower()}}}";;
 
 			SponsorLevel actual = JsonConvert.DeserializeObject<SponsorLevel>( json );
 			Assert.Equal( expected, actual );
@@ -56,10 +58,12 @@ namespace DevSpace.Common.Entities.Test {
     ""displayorder"": {x.DisplayOrder},
     ""name"": ""{x.Name}"",
     ""cost"": {x.Cost},
+    ""displaylink"": {x.DisplayLink.ToString().ToLower()},
     ""displayinemails"": {x.DisplayInEmails.ToString().ToLower()},
     ""displayinsidebar"": {x.DisplayInSidebar.ToString().ToLower()},
     ""tickets"": {x.Tickets},
     ""discount"": {x.Discount},
+    ""timeonscreen"": {x.TimeOnScreen},
     ""preconemail"": {x.PreConEmail.ToString().ToLower()},
     ""midconemail"": {x.MidConEmail.ToString().ToLower()},
     ""postconemail"": {x.PostConEmail.ToString().ToLower()}
@@ -105,16 +109,18 @@ namespace DevSpace.Common.Entities.Test {
 				displayorder: i,
 				name: $"Sponsor Level {i}",
 				cost: i,
+				displaylink: ( i & 0x20 ) > 0,
 				displayinemails: ( i & 0x01 ) > 0,
 				displayinsidebar: ( i & 0x02 ) > 0,
 				tickets: i,
 				discount: i,
+				timeonscreen: i,
 				preconemail: ( i & 0x04 ) > 0,
 				midconemail: ( i & 0x08 ) > 0,
 				postconemail: ( i & 0x10 ) > 0
 			);
 
 		internal static string SponsorLevelToJson( SponsorLevel x ) =>
-			$"{{'id':{x.Id},'displayorder':{x.DisplayOrder},'name':{(null == x.Name ? "null" : $"'{x.Name}'")},'cost':{x.Cost},'displayinemails':{x.DisplayInEmails.ToString().ToLower()},'displayinsidebar':{x.DisplayInSidebar.ToString().ToLower()},'tickets':{x.Tickets},'discount':{x.Discount},'preconemail':{x.PreConEmail.ToString().ToLower()},'midconemail':{x.MidConEmail.ToString().ToLower()},'postconemail':{x.PostConEmail.ToString().ToLower()}}}";
+			$"{{'id':{x.Id},'displayorder':{x.DisplayOrder},'name':{(null == x.Name ? "null" : $"'{x.Name}'")},'cost':{x.Cost},'displaylink':{x.DisplayLink.ToString().ToLower()},'displayinemails':{x.DisplayInEmails.ToString().ToLower()},'displayinsidebar':{x.DisplayInSidebar.ToString().ToLower()},'tickets':{x.Tickets},'discount':{x.Discount},'timeonscreen':{x.TimeOnScreen},'preconemail':{x.PreConEmail.ToString().ToLower()},'midconemail':{x.MidConEmail.ToString().ToLower()},'postconemail':{x.PostConEmail.ToString().ToLower()}}}";
 	}
 }

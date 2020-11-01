@@ -25,15 +25,10 @@ namespace DevSpace.Common.Entities {
 			if( null == output ) {
 				ConstructorInfo ctor = typeof( T )
 					.GetConstructors()
-					.Single( ci => typeof( T ) != ci.GetParameters().First().ParameterType );
+					.Single( ci => typeof( T ) == ci.GetParameters().First().ParameterType );
 
 				output = (T)ctor
-					.Invoke(
-						ctor
-							.GetParameters()
-							.Select( pi => pi.DefaultValue )
-							.ToArray()
-					);
+					.Invoke( new object[] { null } );
 			}
 
 			while( reader.Read() ) {

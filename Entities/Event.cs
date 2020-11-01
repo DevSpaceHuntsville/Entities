@@ -6,25 +6,37 @@ namespace DevSpace.Common.Entities {
 	public class Event : IEquatable<Event> {
 		public readonly int Id;
 		public readonly string Name;
+		public readonly DateTime StartDate;
+		public readonly DateTime EndDate;
 
 		public Event (
 			int id = default,
-			string name = default
+			string name = default,
+			DateTime startdate = default,
+			DateTime enddate = default
 		) {
 			this.Id = id;
 			this.Name = name;
+			this.StartDate = startdate;
+			this.EndDate = enddate;
 		}
 
 		public Event( Event copy )
 			: this(
 				copy?.Id ?? default,
-				copy?.Name
+				copy?.Name,
+				copy?.StartDate ?? default,
+				copy?.EndDate ?? default
 			) { }
 
 		public Event WithId( int id ) =>
-			new Event( id, this.Name );
+			new Event( id, this.Name, this.StartDate, this.EndDate );
 		public Event WithName( string name ) =>
-			new Event( this.Id, name );
+			new Event( this.Id, name, this.StartDate, this.EndDate );
+		public Event WithStartDate( DateTime startdate ) =>
+			new Event( this.Id, this.Name, startdate, this.EndDate );
+		public Event WithEndDate( DateTime enddate ) =>
+			new Event( this.Id, this.Name, this.StartDate, enddate );
 
 		public override bool Equals( object obj ) {
 			if( obj is Event that )
@@ -34,8 +46,8 @@ namespace DevSpace.Common.Entities {
 		}
 
 		private int? _hash = null;
-		private const int _bigPrime = 24359;
-		private const int _littlePrime = 3673;
+		private const int _bigPrime = 25981;
+		private const int _littlePrime = 8081;
 		public override int GetHashCode() {
 			Func<object, int> SafeHashCode = ( obj ) =>
 				obj is object ish
@@ -48,6 +60,8 @@ namespace DevSpace.Common.Entities {
 
 					_hash = _hash * _littlePrime + SafeHashCode( this.Id );
 					_hash = _hash * _littlePrime + SafeHashCode( this.Name );
+					_hash = _hash * _littlePrime + SafeHashCode( this.StartDate );
+					_hash = _hash * _littlePrime + SafeHashCode( this.EndDate );
 				}
 			}
 
@@ -67,6 +81,8 @@ namespace DevSpace.Common.Entities {
 					this.GetHashCode() == that.GetHashCode()
 					&& this.Id == that.Id
 					&& this.Name == that.Name
+					&& this.StartDate == that.StartDate
+					&& this.EndDate == that.EndDate
 				);
 		}
 

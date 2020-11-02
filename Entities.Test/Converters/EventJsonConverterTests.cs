@@ -8,7 +8,7 @@ namespace DevSpace.Common.Entities.Test {
 	public class EventJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
-			string json = "[{'id':2015,'name':'DevSpace 2015','startdate':'2026-05-09T00:00:00-05:00','enddate':'2031-11-14T00:00:00-06:00'},{'id':2016,'name':'DevSpace 2016','startdate':'2026-05-10T00:00:00-05:00','enddate':'2031-11-16T00:00:00-06:00'},{'id':2017,'name':'DevSpace 2017','startdate':'2026-05-11T00:00:00-05:00','enddate':'2031-11-18T00:00:00-06:00'},{'id':2018,'name':'DevSpace 2018','startdate':'2026-05-12T00:00:00-05:00','enddate':'2031-11-20T00:00:00-06:00'},{'id':2019,'name':'DevSpace 2019','startdate':'2026-05-13T00:00:00-05:00','enddate':'2031-11-22T00:00:00-06:00'},{'id':2020,'name':'DevSpace 2020','startdate':'2026-05-14T00:00:00-05:00','enddate':'2031-11-24T00:00:00-06:00'}]";
+			string json = "[{'id':2015,'name':'DevSpace 2015','startdate':'2026-05-09T00:00:00Z','enddate':'2031-11-14T00:00:00Z'},{'id':2016,'name':'DevSpace 2016','startdate':'2026-05-10T00:00:00Z','enddate':'2031-11-16T00:00:00Z'},{'id':2017,'name':'DevSpace 2017','startdate':'2026-05-11T00:00:00Z','enddate':'2031-11-18T00:00:00Z'},{'id':2018,'name':'DevSpace 2018','startdate':'2026-05-12T00:00:00Z','enddate':'2031-11-20T00:00:00Z'},{'id':2019,'name':'DevSpace 2019','startdate':'2026-05-13T00:00:00Z','enddate':'2031-11-22T00:00:00Z'},{'id':2020,'name':'DevSpace 2020','startdate':'2026-05-14T00:00:00Z','enddate':'2031-11-24T00:00:00Z'}]";
 			IEnumerable<Event> expected = Enumerable.Range( 2015, 6 ).Select( CreateEvent );
 			IEnumerable<Event> actual = JsonConvert.DeserializeObject<IEnumerable<Event>>( json );
 			Assert.Equal( expected, actual );
@@ -16,7 +16,7 @@ namespace DevSpace.Common.Entities.Test {
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
-			string json = "{'enddate':'2031-11-14T00:00:00-06:00','name':'DevSpace 2015','id':2015,'startdate':'2026-05-09T00:00:00-05:00'}";
+			string json = "{'enddate':'2031-11-14T00:00:00Z','name':'DevSpace 2015','id':2015,'startdate':'2026-05-09T00:00:00Z'}";
 			Event expected = CreateEvent( 2015 );
 			Event actual = JsonConvert.DeserializeObject<Event>( json );
 			Assert.Equal( expected, actual );

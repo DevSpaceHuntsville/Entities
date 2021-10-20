@@ -1,10 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace DevSpace.Common.Entities.Test.Helpers {
 	public static class RandomEntity {
 		private static Random random = new Random();
+
+		public static Article Article =>
+			new Article(
+				id: random.Next(),
+				title: random.NextString( 16 ),
+				body: random.NextString( 16 ),
+				publishdate: random.NextDateTime(),
+				expiredate: random.NextDateTime()
+			);
+
+		public static Room Room =>
+			new Room(
+				id: random.Next(),
+				displayname: random.NextString( 16 )
+			);
+
+		public static TimeSlot TimeSlot =>
+			new TimeSlot(
+				id: random.Next(),
+				starttime: random.NextDateTime(),
+				endtime: random.NextDateTime()
+			);
+
+		public static Tag Tag =>
+			new Tag(
+				id: random.Next(),
+				text: random.NextString( 59 )
+			);
 
 		public static Event Event =>
 			new Event(
@@ -47,6 +74,24 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				sponsoredevent: RandomEntity.Event,
 				sponsoringcompany: RandomEntity.Company,
 				sponsorshiplevel: RandomEntity.SponsorLevel
+			);
+
+		public static Session Session =>
+			new Session(
+				id: random.Next(),
+				userid: random.Next(),
+				title: random.NextString( 5, 250 ),
+				@abstract: random.NextString( 20, 500 ),
+				notes: random.NextBool() ? null : random.NextString( 20, 5000 ),
+				sessionlength: random.NextBool() ? 60 : 30,
+				level: RandomEntity.Tag,
+				category: RandomEntity.Tag,
+				accepted: random.NextBool() ? (bool?)null : random.NextBool(),
+				tags: Enumerable.Range( 0, 5 ).Select( _ => RandomEntity.Tag ).ToList(),
+				timeslot: RandomEntity.TimeSlot,
+				room: RandomEntity.Room,
+				eventid: random.Next(),
+				sessionizeid: random.NextBool() ? (int?)null : random.Next()
 			);
 	}
 }

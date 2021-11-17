@@ -235,12 +235,17 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				object originalValue = fi.GetValue( original );
 				object differentValue = fi.GetValue( different );
 
-				while(
-					originalValue?.Equals( differentValue )
-					??
-					null == differentValue
-				) {
-					differentValue = fi.GetValue( GetRandomEntity<T>() );
+				if( typeof( bool? ) == fi.FieldType ) {
+					bool? o = (bool?)originalValue;
+					differentValue = o.HasValue ? !o.Value : true;
+				} else {
+					while(
+						originalValue?.Equals( differentValue )
+						??
+						null == differentValue
+					) {
+						differentValue = fi.GetValue( GetRandomEntity<T>() );
+					}
 				}
 
 				MethodInfo with = typeof( T ).GetMethod( $"With{fi.Name}" );

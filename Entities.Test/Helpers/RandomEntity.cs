@@ -93,5 +93,21 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				eventid: random.Next(),
 				sessionizeid: random.NextBool() ? (int?)null : random.Next()
 			);
+
+		public static User User =>
+			new User(
+				bio: random.NextString( 5, 5000 ),
+				displayname: random.NextString( 5, 50 ),
+				emailaddress: random.NextString( 5, 50 ),
+				id: random.Next(),
+				permissions: (byte)random.Next( 0, byte.MaxValue ),
+				twitter: random.NextString( 1, 16 ),
+				website: random.NextString( 16, 1000 ),
+				sessiontoken: Guid.NewGuid(),
+				sessionexpires: random.NextDateTime(),
+				blog: random.NextString( 16, 1000 ),
+				profilepicture: random.NextString( 16, 1000 ),
+				sessionizeid: random.NextBool() ? (Guid?)Guid.NewGuid() : null
+			);
 	}
 }

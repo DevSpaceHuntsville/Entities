@@ -119,7 +119,7 @@ namespace DevSpace.Common.Entities {
 					_hash = _hash * _littlePrime + SafeHashCode( this.EventId );
 					_hash = _hash * _littlePrime + SafeHashCode( this.SessionizeId );
 
-					foreach( Tag x in Tags.OrderBy( y => y ) )
+					foreach( Tag x in Tags.OrderBy( y => y.Id ) )
 						_hash = _hash * _littlePrime + SafeHashCode( x );
 				}
 			}
@@ -152,8 +152,8 @@ namespace DevSpace.Common.Entities {
 					&& this.EventId == that.EventId
 					&& this.SessionizeId == that.SessionizeId
 					&& Enumerable.SequenceEqual(
-						this.Tags.OrderBy( y => y ),
-						that.Tags.OrderBy( y => y )
+						this.Tags.OrderBy( y => y.Id ),
+						that.Tags.OrderBy( y => y.Id )
 					)
 				);
 		}

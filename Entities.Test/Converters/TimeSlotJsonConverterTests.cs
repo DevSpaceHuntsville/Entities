@@ -61,6 +61,6 @@ namespace DevSpace.Common.Entities.Test {
 			new TimeSlot( i, ChosenDate.AddDays( i ), ChosenDate.AddDays( i ).AddHours( i ) );
 
 		internal static string TimeSlotToJson( TimeSlot x ) =>
-			$"{{'id':{x.Id},'starttime':'{x.StartTime}','endtime':'{x.EndTime}'}}";
+			$"{{'id':{x.Id},'starttime':'{x.StartTime:yyyy-MM-ddTHH:mm:ssZ}','endtime':'{x.EndTime:yyyy-MM-ddTHH:mm:ssZ}'}}";
 	}
 }

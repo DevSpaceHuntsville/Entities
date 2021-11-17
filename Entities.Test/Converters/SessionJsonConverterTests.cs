@@ -18,13 +18,40 @@ namespace DevSpace.Common.Entities.Test {
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
 			Session expected = CreateSession( 1 );
-			string json = null;
-			//$"{{" +
-			//	$"'sponsoringCompany':{CompanyJsonConverterTests.CompanyToJson( expected.SessioningCompany )}," +
-			//	$"'sponsoredEvent':{EventJsonConverterTests.EventToJson( expected.SessionedEvent )}," +
-			//	$"'id':{expected.Id}," +
-			//	$"'sponsorshipLevel':{SessionLevelJsonConverterTests.SessionLevelToJson( expected.SessionshipLevel )}" +
-			//$"}}";
+			string json = @"{
+	'notes': 'Notes 1',
+	'title': 'Title 1',
+	'userId': 101,
+	'sessionizeId': null,
+	'category': {
+		'id': 2,
+		'text': 'Text 2'
+	},
+	'tags': [
+		{
+			'id': 1,
+			'text': 'Text 1'
+		}
+	],
+	'level': {
+		'id': 2,
+		'text': 'Text 2'
+	},
+	'id': 1,
+	'accepted': true,
+	'room': {
+		'id': 1,
+		'displayname': 'Display Name 1'
+	},
+	'timeSlot': {
+		'id': 1,
+		'starttime': '11/2/2020 12: 00: 00 AM',
+		'endtime': '11/2/2020 1: 00: 00 AM'
+	},
+	'eventId': 2021,
+	'sessionLength': 30,
+	'abstract': 'Abstract 1'
+}";
 
 			Session actual = JsonConvert.DeserializeObject<Session>( json );
 			Assert.Equal( expected, actual );
@@ -38,45 +65,48 @@ namespace DevSpace.Common.Entities.Test {
 			Assert.Equal( expected, actual );
 		}
 
-		//[Fact]
-		//public void JsonSerializerFormattingIndented() {
-		//	IEnumerable<Session> data = Enumerable.Range( 1, 6 ).Select( i => CreateSession( i ) );
-		//	string expected = "[\r\n" + string.Join( ",\r\n", data.Select( x => $@"  {{
-  //  ""id"": {x.Id},
-  //  ""sponsoredEvent"": {{
-  //    ""id"": {x.SessionedEvent.Id},
-  //    ""name"": ""{x.SessionedEvent.Name}"",
-  //    ""startdate"": ""{EventJsonConverterTests.DateTimeToJsonString( x.SessionedEvent.StartDate )}"",
-  //    ""enddate"": ""{EventJsonConverterTests.DateTimeToJsonString( x.SessionedEvent.EndDate )}""
-  //  }},
-  //  ""sponsoringCompany"": {{
-  //    ""id"": {x.SessioningCompany.Id},
-  //    ""name"": ""{x.SessioningCompany.Name}"",
-  //    ""address"": ""{x.SessioningCompany.Address}"",
-  //    ""phone"": ""{x.SessioningCompany.Phone}"",
-  //    ""website"": ""{x.SessioningCompany.Website}"",
-  //    ""twitter"": ""{x.SessioningCompany.Twitter}""
-  //  }},
-  //  ""sponsorshipLevel"": {{
-  //    ""id"": {x.SessionshipLevel.Id},
-  //    ""displayorder"": {x.SessionshipLevel.DisplayOrder},
-  //    ""name"": ""{x.SessionshipLevel.Name}"",
-  //    ""cost"": {x.SessionshipLevel.Cost},
-  //    ""displaylink"": {x.SessionshipLevel.DisplayLink.ToString().ToLower()},
-  //    ""displayinemails"": {x.SessionshipLevel.DisplayInEmails.ToString().ToLower()},
-  //    ""displayinsidebar"": {x.SessionshipLevel.DisplayInSidebar.ToString().ToLower()},
-  //    ""tickets"": {x.SessionshipLevel.Tickets},
-  //    ""discount"": {x.SessionshipLevel.Discount},
-  //    ""timeonscreen"": {x.SessionshipLevel.TimeOnScreen},
-  //    ""preconemail"": {x.SessionshipLevel.PreConEmail.ToString().ToLower()},
-  //    ""midconemail"": {x.SessionshipLevel.MidConEmail.ToString().ToLower()},
-  //    ""postconemail"": {x.SessionshipLevel.PostConEmail.ToString().ToLower()}
-  //  }}
-  //}}" ) ) + "\r\n]";
+		[Fact]
+		public void JsonSerializerFormattingIndented() {
+			IEnumerable<Session> data = Enumerable.Range( 1, 6 ).Select( i => CreateSession( i ) );
+			string expected = "[\r\n" + string.Join( ",\r\n", data.Select( x => $@"  {{
+    ""id"": {x.Id},
+    ""userId"": {x.UserId},
+    ""title"": ""{x.Title}"",
+    ""abstract"": ""{x.Abstract}"",
+    ""notes"": ""{x.Notes}"",
+    ""sessionLength"": {x.SessionLength},
+    ""level"": {{
+      ""id"": {x.Level.Id},
+      ""text"": ""{x.Level.Text}""
+    }},
+    ""category"": {{
+      ""id"": {x.Category.Id},
+      ""text"": ""{x.Category.Text}""
+    }},
+    ""accepted"": {x.Accepted.ToString().ToLower()},
+    ""tags"": [
+{string.Join( @",
+", x.Tags.Select( t => $@"      {{
+        ""id"": {t.Id},
+        ""text"": ""{t.Text}""
+      }}" ) )}
+    ],
+    ""timeSlot"": {{
+      ""id"": {x.TimeSlot.Id},
+      ""starttime"": ""{x.TimeSlot.StartTime:yyyy-MM-ddTHH:mm:ssZ}"",
+      ""endtime"": ""{x.TimeSlot.EndTime:yyyy-MM-ddTHH:mm:ssZ}""
+    }},
+    ""room"": {{
+      ""id"": {x.Room.Id},
+      ""displayname"": ""{x.Room.DisplayName}""
+    }},
+    ""eventId"": {x.EventId},
+    ""sessionizeId"": {x.SessionizeId?.ToString() ?? "null"}
+  }}" ) ) + "\r\n]";
 
-		//	string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-		//	Assert.Equal( expected, actual );
-		//}
+			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
+			Assert.Equal( expected, actual );
+		}
 
 		private Session CreateSession( int i ) =>
 			new Session(
@@ -101,17 +131,17 @@ namespace DevSpace.Common.Entities.Test {
 				$"'id':{x.Id}," +
 				$"'userId':{x.UserId}," +
 				$"'title':'{x.Title}'," +
-				$"'abstract':'{x.Abstract}'" +
+				$"'abstract':'{x.Abstract}'," +
 				$"'notes':'{x.Notes}'," +
-				$"'sessionlength':'{x.SessionLength}'," +
+				$"'sessionLength':{x.SessionLength}," +
 				$"'level':{TagJsonConverterTests.TagToJson( x.Level )}," +
 				$"'category':{TagJsonConverterTests.TagToJson( x.Category )}," +
 				$"'accepted':{(x.Accepted.HasValue ? x.Accepted.Value.ToString().ToLower() : "null")}," +
 				$"'tags':[{string.Join( ",", x.Tags.Select( t => TagJsonConverterTests.TagToJson( t ) ) )}]," +
-				$"'timeslot':{TimeSlotJsonConverterTests.TimeSlotToJson( x.TimeSlot )}," +
+				$"'timeSlot':{TimeSlotJsonConverterTests.TimeSlotToJson( x.TimeSlot )}," +
 				$"'room':{RoomJsonConverterTests.RoomToJson( x.Room )}," +
-				$"'eventid':{x.EventId}," +
-				$"'sessionizeid':{(x.SessionizeId.HasValue ? x.SessionizeId.ToString() : "null" )}" +
+				$"'eventId':{x.EventId}," +
+				$"'sessionizeId':{(x.SessionizeId.HasValue ? x.SessionizeId.ToString() : "null" )}" +
 			$"}}";
 	}
 }

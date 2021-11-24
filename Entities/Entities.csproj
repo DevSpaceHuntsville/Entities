@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.2.1</Version>
+    <Version>0.5.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/DevSpaceHuntsville/Entities</RepositoryUrl>
     <PackageId>DevSpace.Common.Entities</PackageId>
@@ -11,13 +11,14 @@
     <Authors>Chris Gardner</Authors>
     <Company>DevSpace Huntsville</Company>
     <Description>Common entities to share across multiple projects</Description>
-    <Copyright>2020</Copyright>
+    <Copyright>2020 - 2021</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://dev.azure.com/devspacehuntsville/DevSpace</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Entities</PackageTags>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
+    <AssemblyVersion>0.5.0.0</AssemblyVersion>
+    <FileVersion>0.5.0.0</FileVersion>
+    <PackageReleaseNotes>Should contain full list of entities</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

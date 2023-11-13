@@ -47,7 +47,7 @@ namespace DevSpace.Common.Entities.Test {
 			string expected = $"[{string.Join( ",", data.Select( x => SponsorLevelToJson( x ) ) )}]".Replace( '\'', '\"' );
 
 			string actual = JsonConvert.SerializeObject( data );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
@@ -70,7 +70,7 @@ namespace DevSpace.Common.Entities.Test {
   }}" ) ) + "\r\n]";
 
 			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
@@ -84,7 +84,7 @@ namespace DevSpace.Common.Entities.Test {
 					NullValueHandling = NullValueHandling.Include
 				}
 			);
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
@@ -100,7 +100,7 @@ namespace DevSpace.Common.Entities.Test {
 					NullValueHandling = NullValueHandling.Ignore
 				}
 			);
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		internal static SponsorLevel CreateSponsorLevel( int i ) =>

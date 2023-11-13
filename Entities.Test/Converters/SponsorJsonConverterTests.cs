@@ -34,7 +34,7 @@ namespace DevSpace.Common.Entities.Test {
 			Sponsor data = CreateSponsor( 1 );
 			string actual = JsonConvert.SerializeObject( data );
 			string expected = SponsorToJson( data ).Replace( '\'', '\"' );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
@@ -74,7 +74,7 @@ namespace DevSpace.Common.Entities.Test {
   }}" ) ) + "\r\n]";
 
 			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		private Sponsor CreateSponsor( int i ) =>

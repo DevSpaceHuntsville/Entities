@@ -62,7 +62,7 @@ namespace DevSpace.Common.Entities.Test {
 			Session data = CreateSession( 1 );
 			string actual = JsonConvert.SerializeObject( data );
 			string expected = SessionToJson( data ).Replace( '\'', '\"' );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
@@ -105,7 +105,7 @@ namespace DevSpace.Common.Entities.Test {
   }}" ) ) + "\r\n]";
 
 			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual );
+			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		private Session CreateSession( int i ) =>

@@ -1,9 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>0.5.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<VersionPrefix>0.5.1</VersionPrefix>
     <RepositoryUrl>https://github.com/DevSpaceHuntsville/Entities</RepositoryUrl>
     <PackageId>DevSpace.Common.Entities</PackageId>
     <AssemblyName>DevSpace.Common.Entities</AssemblyName>
@@ -11,14 +10,14 @@
     <Authors>Chris Gardner</Authors>
     <Company>DevSpace Huntsville</Company>
     <Description>Common entities to share across multiple projects</Description>
-    <Copyright>2020 - 2021</Copyright>
+    <Copyright>2020 - 2023</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://dev.azure.com/devspacehuntsville/DevSpace</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Entities</PackageTags>
-    <AssemblyVersion>0.5.0.0</AssemblyVersion>
-    <FileVersion>0.5.0.0</FileVersion>
-    <PackageReleaseNotes>Should contain full list of entities</PackageReleaseNotes>
+    <AssemblyVersion>0.5.1.0</AssemblyVersion>
+    <FileVersion>0.5.1.0</FileVersion>
+    <PackageReleaseNotes>Updated to dotnet8</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

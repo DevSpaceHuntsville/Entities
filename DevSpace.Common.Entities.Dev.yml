@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - master
+    - dev
 jobs:
 - job: Job_1
   displayName: Agent job 1
@@ -15,18 +15,24 @@ jobs:
     inputs:
       version: 8.0.x
   - task: DotNetCoreCLI@2
-    displayName: dotnet build
+    displayName: dotnet build -c Debug
     inputs:
-      projects: '**/*.csproj'
-      arguments: -c Release
+      command: build
+      arguments: -c Debug
   - task: DotNetCoreCLI@2
-    displayName: dotnet test
+    displayName: dotnet test -c Debug --no-build
     inputs:
       command: test
+      arguments: -c Debug --no-build
+  - task: DotNetCoreCLI@2
+    displayName: dotnet pack -c Debug --no-build --include-symbols --include-source --version-suffix dbg
+    inputs:
+      command: pack
+      arguments: -c Debug --no-build --include-symbols --include-source --version-suffix dbg
   - task: NuGetCommand@2
     displayName: NuGet push
     inputs:
       command: push
-      searchPatternPush: Entities\bin\Release\*.nupkg
+      searchPatternPush: Entities\bin\Debug\*.nupkg
       feedPublish: bf58cb17-b64e-4d1d-aa47-1090a4336e86/1aa5da4a-a967-430f-9c0a-75a8eb669cab
       allowPackageConflicts: true

@@ -198,7 +198,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			try {
 				Assert.Equal( expected, actual );
 			} catch( EqualException ) {
-				throw new AssertActualExpectedException(
+				throw EqualException.ForMismatchedValues( 
 					expected,
 					actual,
 					userMessage
@@ -210,9 +210,9 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			try {
 				Assert.NotEqual( expected, actual );
 			} catch( NotEqualException ) {
-				throw new AssertActualExpectedException(
-					expected,
-					actual,
+				throw NotEqualException.ForEqualValues(
+					expected.ToString(),
+					actual.ToString(),
 					userMessage
 				);
 			}

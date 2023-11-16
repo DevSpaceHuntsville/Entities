@@ -27,8 +27,8 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: dotnet pack -c Debug --no-build --include-symbols --include-source --version-suffix dbg
     inputs:
-      command: pack
-      arguments: -c Debug --no-build --include-symbols --include-source --version-suffix dbg
+      command: custom
+      arguments: pack -c Debug --no-build --include-symbols --include-source --version-suffix dbg
   - task: NuGetCommand@2
     displayName: NuGet push
     inputs:

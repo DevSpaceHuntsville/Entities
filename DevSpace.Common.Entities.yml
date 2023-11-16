@@ -6,7 +6,7 @@ jobs:
 - job: Job_1
   displayName: Agent job 1
   pool:
-    vmImage: windows-2019
+    vmImage: windows-latest
   steps:
   - checkout: self
     fetchTags: true
@@ -15,6 +15,10 @@ jobs:
     inputs:
       projects: '**/*.csproj'
       arguments: -c Release
+  - task: UseDotNet@2
+    displayName: set dotnet version
+    inputs:
+      version: 8.0.x
   - task: DotNetCoreCLI@2
     displayName: dotnet test
     inputs:

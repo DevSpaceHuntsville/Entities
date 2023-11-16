@@ -28,7 +28,8 @@ jobs:
     displayName: dotnet pack -c Debug --no-build --include-symbols --include-source --version-suffix dbg
     inputs:
       command: custom
-      arguments: pack -c Debug --no-build --include-symbols --include-source --version-suffix dbg
+      custom: pack
+      arguments: -c Debug --no-build --include-symbols --include-source --version-suffix dbg
   - task: NuGetCommand@2
     displayName: NuGet push
     inputs:

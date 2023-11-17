@@ -1,23 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class SessionJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
-			IEnumerable<Session> expected = Enumerable.Range( 1, 6 ).Select( i => CreateSession( i ) );
-
-			string json = $"[{string.Join( ",", expected.Select( x => SessionToJson( x ) ) )}]";
-
-			IEnumerable<Session> actual = JsonConvert.DeserializeObject<IEnumerable<Session>>( json );
-			Assert.Equal( expected, actual );
+			string json = $"[{string.Join( ",", Enumerable.Range( 1, 6 ).Select( CreateSession ).Select( x => SessionToJson( x ) ) )}]";
+			Assert.Equal(
+				expected: Enumerable.Range( 1, 6 ).Select( CreateSession ),
+				JsonConvert.DeserializeObject<IEnumerable<Session>>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
-			Session expected = CreateSession( 1 );
 			string json = @"{
 	'notes': 'Notes 1',
 	'title': 'Title 1',
@@ -52,23 +47,26 @@ namespace DevSpace.Common.Entities.Test {
 	'sessionLength': 30,
 	'abstract': 'Abstract 1'
 }";
-
-			Session actual = JsonConvert.DeserializeObject<Session>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: CreateSession( 1 ),
+				actual: JsonConvert.DeserializeObject<Session>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingNone() {
-			Session data = CreateSession( 1 );
-			string actual = JsonConvert.SerializeObject( data );
-			string expected = SessionToJson( data ).Replace( '\'', '\"' );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected: SessionToJson( CreateSession( 1 ) ).Replace( '\'', '\"' ),
+				actual: JsonConvert.SerializeObject( CreateSession( 1 ) ),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingIndented() {
-			IEnumerable<Session> data = Enumerable.Range( 1, 6 ).Select( i => CreateSession( i ) );
-			string expected = "[\r\n" + string.Join( ",\r\n", data.Select( x => $@"  {{
+			string expected = "[\r\n" + string.Join( ",\r\n", Enumerable.Range( 1, 6 ).Select( CreateSession ).Select( x => $@"  {{
     ""id"": {x.Id},
     ""userId"": {x.UserId},
     ""title"": ""{x.Title}"",
@@ -83,7 +81,7 @@ namespace DevSpace.Common.Entities.Test {
       ""id"": {x.Category.Id},
       ""text"": ""{x.Category.Text}""
     }},
-    ""accepted"": {x.Accepted.ToString().ToLower()},
+    ""accepted"": {x.Accepted?.ToString().ToLower() ?? "null"},
     ""tags"": [
 {string.Join( @",
 ", x.Tags.Select( t => $@"      {{
@@ -103,9 +101,16 @@ namespace DevSpace.Common.Entities.Test {
     ""eventId"": {x.EventId},
     ""sessionizeId"": {x.SessionizeId?.ToString() ?? "null"}
   }}" ) ) + "\r\n]";
-
-			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.SerializeObject(
+					Enumerable.Range( 1, 6 ).Select( i => CreateSession( i ) ),
+					Formatting.Indented
+				),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		private Session CreateSession( int i ) =>

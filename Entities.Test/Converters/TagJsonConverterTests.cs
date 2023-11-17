@@ -1,37 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class TagJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
 			string json = "[{'id':1,'text':'Text 1'},{'id':2,'text':'Text 2'},{'id':3,'text':'Text 3'}]";
-			IEnumerable<Tag> expected = Enumerable.Range( 1, 3 ).Select( CreateTag );
-			IEnumerable<Tag> actual = JsonConvert.DeserializeObject<IEnumerable<Tag>>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: Enumerable.Range( 1, 3 ).Select( CreateTag ),
+				actual: JsonConvert.DeserializeObject<IEnumerable<Tag>>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
-			string json = "{'text':'Text 1','id':1}";
-			Tag expected = CreateTag( 1 );
-			Tag actual = JsonConvert.DeserializeObject<Tag>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: CreateTag( 1 ),
+				actual: JsonConvert.DeserializeObject<Tag>( "{'text':'Text 1','id':1}" )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingNone() {
-			IEnumerable<Tag> data = Enumerable.Range( 1, 3 ).Select( CreateTag );
-			string expected = "[{\"id\":1,\"text\":\"Text 1\"},{\"id\":2,\"text\":\"Text 2\"},{\"id\":3,\"text\":\"Text 3\"}]";
-			string actual = JsonConvert.SerializeObject( data );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				"""[{"id":1,"text":"Text 1"},{"id":2,"text":"Text 2"},{"id":3,"text":"Text 3"}]""",
+				JsonConvert.SerializeObject( Enumerable.Range( 1, 3 ).Select( CreateTag ) )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingIndented() {
-			IEnumerable<Tag> data = Enumerable.Range( 1, 3 ).Select( CreateTag );
 			string expected = @"[
   {
     ""id"": 1,
@@ -46,8 +43,13 @@ namespace DevSpace.Common.Entities.Test {
     ""text"": ""Text 3""
   }
 ]";
-			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.SerializeObject(
+					Enumerable.Range( 1, 3 ).Select( CreateTag ),
+					Formatting.Indented
+				)
+			);
 		}
 
 		internal static Tag CreateTag( int i ) =>

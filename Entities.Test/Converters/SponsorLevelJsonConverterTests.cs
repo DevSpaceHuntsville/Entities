@@ -1,58 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class SponsorLevelJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
 			IEnumerable<SponsorLevel> expected = Enumerable.Range( 2015, 6 )
-				.Select( i =>
-					new SponsorLevel(
-						id: i,
-						displayorder: i,
-						name: $"Sponsor Level {i}",
-						cost: i,
-						displaylink: false,
-						displayinemails: false,
-						displayinsidebar: false,
-						tickets: i,
-						discount: i,
-						timeonscreen: i,
-						preconemail: false,
-						midconemail: false,
-						postconemail: false
-					)
-				);
-
-			string json = $"[{string.Join( ",", expected.Select( x => SponsorLevelToJson( x ) ) )}]";
-
-			IEnumerable<SponsorLevel> actual = JsonConvert.DeserializeObject<IEnumerable<SponsorLevel>>( json );
-			Assert.Equal( expected, actual );
+				.Select( CreateSponsorLevel );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.DeserializeObject<IEnumerable<SponsorLevel>>(
+					$"[{string.Join( ",", expected.Select( SponsorLevelToJson ) )}]"
+				)
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
 			SponsorLevel expected = CreateSponsorLevel( 2015 );
-			string json = $@"{{'postconemail':{expected.PostConEmail.ToString().ToLower()},'midconemail':{expected.MidConEmail.ToString().ToLower()},'preconemail':{expected.PreConEmail.ToString().ToLower()},'cost':{expected.Cost},'displayinsidebar':{expected.DisplayInSidebar.ToString().ToLower()},'displayinemails':{expected.DisplayInEmails.ToString().ToLower()},'tickets':{expected.Tickets},'discount':{expected.Discount},'name':'{expected.Name}','displayorder':{expected.DisplayOrder},'id':{expected.Id},'timeonscreen':{expected.TimeOnScreen},'displaylink':{expected.DisplayLink.ToString().ToLower()}}}";;
-
-			SponsorLevel actual = JsonConvert.DeserializeObject<SponsorLevel>( json );
-			Assert.Equal( expected, actual );
+			string json = $@"{{'postconemail':{expected.PostConEmail.ToString().ToLower()},'midconemail':{expected.MidConEmail.ToString().ToLower()},'preconemail':{expected.PreConEmail.ToString().ToLower()},'cost':{expected.Cost},'displayinsidebar':{expected.DisplayInSidebar.ToString().ToLower()},'displayinemails':{expected.DisplayInEmails.ToString().ToLower()},'tickets':{expected.Tickets},'discount':{expected.Discount},'name':'{expected.Name}','displayorder':{expected.DisplayOrder},'id':{expected.Id},'timeonscreen':{expected.TimeOnScreen},'displaylink':{expected.DisplayLink.ToString().ToLower()}}}";
+			
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.DeserializeObject<SponsorLevel>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingNone() {
-			IEnumerable<SponsorLevel> data = Enumerable.Range( 2015, 6 ).Select( i => CreateSponsorLevel( i ) );
-			string expected = $"[{string.Join( ",", data.Select( x => SponsorLevelToJson( x ) ) )}]".Replace( '\'', '\"' );
-
-			string actual = JsonConvert.SerializeObject( data );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected: $"[{string.Join( ",", Enumerable.Range( 2015, 6 ).Select( CreateSponsorLevel ).Select( SponsorLevelToJson ) )}]".Replace( '\'', '\"' ),
+				actual: JsonConvert.SerializeObject( Enumerable.Range( 2015, 6 ).Select( CreateSponsorLevel ) ),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingIndented() {
-			IEnumerable<SponsorLevel> data = Enumerable.Range( 2015, 6 ).Select( i => CreateSponsorLevel( i ) );
+			IEnumerable<SponsorLevel> data = Enumerable.Range( 2015, 6 ).Select( CreateSponsorLevel );
 			string expected = "[\r\n" + string.Join( ",\r\n", data.Select( x => $@"  {{
     ""id"": {x.Id},
     ""displayorder"": {x.DisplayOrder},
@@ -68,39 +54,49 @@ namespace DevSpace.Common.Entities.Test {
     ""midconemail"": {x.MidConEmail.ToString().ToLower()},
     ""postconemail"": {x.PostConEmail.ToString().ToLower()}
   }}" ) ) + "\r\n]";
-
-			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.SerializeObject( data, Formatting.Indented ),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		[Fact]
 		public void JsonSerializer_IncludeNull() {
 			SponsorLevel data = CreateSponsorLevel( 2015 ).WithName( null );
-			string expected = SponsorLevelToJson( data ).Replace( '\'', '\"' );
-
-			string actual = JsonConvert.SerializeObject(
-				data,
-				new JsonSerializerSettings {
-					NullValueHandling = NullValueHandling.Include
-				}
+			Assert.Equal(
+				expected: SponsorLevelToJson( data ).Replace( '\'', '\"' ),
+				actual: JsonConvert.SerializeObject(
+					data,
+					new JsonSerializerSettings {
+						NullValueHandling = NullValueHandling.Include
+					}
+				),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
 			);
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		[Fact]
 		public void JsonSerializer_IgnoreNull() {
 			SponsorLevel data = CreateSponsorLevel( 2015 ).WithName( null );
-			string expected = SponsorLevelToJson( data )
-				.Replace( ",'name':null", string.Empty )
-				.Replace( '\'', '\"' );
-
-			string actual = JsonConvert.SerializeObject(
-				data,
-				new JsonSerializerSettings {
-					NullValueHandling = NullValueHandling.Ignore
-				}
+			Assert.Equal(
+				expected: SponsorLevelToJson( data )
+					.Replace( ",'name':null", string.Empty )
+					.Replace( '\'', '\"' ),
+				actual: JsonConvert.SerializeObject(
+					data,
+					new JsonSerializerSettings {
+						NullValueHandling = NullValueHandling.Ignore
+					}
+				),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
 			);
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
 		}
 
 		internal static SponsorLevel CreateSponsorLevel( int i ) =>

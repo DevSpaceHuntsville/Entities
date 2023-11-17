@@ -1,46 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class SponsorJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
-			IEnumerable<Sponsor> expected = Enumerable.Range( 2015, 6 ).Select( i => CreateSponsor( i ) );
-
-			string json = $"[{string.Join( ",", expected.Select( x => SponsorToJson( x ) ) )}]";
-
-			IEnumerable<Sponsor> actual = JsonConvert.DeserializeObject<IEnumerable<Sponsor>>( json );
-			Assert.Equal( expected, actual );
+			string json = $"[{string.Join( ",", Enumerable.Range( 2015, 6 ).Select( CreateSponsor ).Select( x => SponsorToJson( x ) ) )}]";
+			Assert.Equal(
+				expected: Enumerable.Range( 2015, 6 ).Select( CreateSponsor ),
+				actual: JsonConvert.DeserializeObject<IEnumerable<Sponsor>>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
-			Sponsor expected = CreateSponsor( 2015 );
 			string json = $"{{" +
-				$"'sponsoringCompany':{CompanyJsonConverterTests.CompanyToJson( expected.SponsoringCompany )}," +
-				$"'sponsoredEvent':{EventJsonConverterTests.EventToJson( expected.SponsoredEvent )}," +
-				$"'id':{expected.Id}," +
-				$"'sponsorshipLevel':{SponsorLevelJsonConverterTests.SponsorLevelToJson( expected.SponsorshipLevel )}" +
+				$"'sponsoringCompany':{CompanyJsonConverterTests.CompanyToJson( CreateSponsor( 2015 ).SponsoringCompany )}," +
+				$"'sponsoredEvent':{EventJsonConverterTests.EventToJson( CreateSponsor( 2015 ).SponsoredEvent )}," +
+				$"'id':{CreateSponsor( 2015 ).Id}," +
+				$"'sponsorshipLevel':{SponsorLevelJsonConverterTests.SponsorLevelToJson( CreateSponsor( 2015 ).SponsorshipLevel )}" +
 			$"}}";
-
-			Sponsor actual = JsonConvert.DeserializeObject<Sponsor>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: CreateSponsor( 2015 ),
+				actual: JsonConvert.DeserializeObject<Sponsor>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingNone() {
-			Sponsor data = CreateSponsor( 1 );
-			string actual = JsonConvert.SerializeObject( data );
-			string expected = SponsorToJson( data ).Replace( '\'', '\"' );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected: SponsorToJson( CreateSponsor( 1 ) ).Replace( '\'', '\"' ),
+				actual: JsonConvert.SerializeObject( CreateSponsor( 1 ) ),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingIndented() {
-			IEnumerable<Sponsor> data = Enumerable.Range( 2015, 6 ).Select( i => CreateSponsor( i ) );
-			string expected = "[\r\n" + string.Join( ",\r\n", data.Select( x => $@"  {{
+			string expected = "[\r\n" + string.Join( ",\r\n", Enumerable.Range( 2015, 6 ).Select( CreateSponsor ).Select( x => $@"  {{
     ""id"": {x.Id},
     ""sponsoredEvent"": {{
       ""id"": {x.SponsoredEvent.Id},
@@ -72,9 +70,16 @@ namespace DevSpace.Common.Entities.Test {
       ""postconemail"": {x.SponsorshipLevel.PostConEmail.ToString().ToLower()}
     }}
   }}" ) ) + "\r\n]";
-
-			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual, ignoreCase: false, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.SerializeObject(
+					Enumerable.Range( 2015, 6 ).Select( CreateSponsor ),
+					Formatting.Indented
+				),
+				ignoreCase: false,
+				ignoreLineEndingDifferences: true,
+				ignoreWhiteSpaceDifferences: true
+			);
 		}
 
 		private Sponsor CreateSponsor( int i ) =>

@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class ArticleJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
 			string json = "[{'id':1,'title':'Title 1','body':'Body 1','publishdate':'2020-11-02T00:00:00Z','expiredate':'2020-11-03T00:00:00Z'},{'id':2,'title':'Title 2','body':'Body 2','publishdate':'2020-11-03T00:00:00Z','expiredate':'2020-11-05T00:00:00Z'},{'id':3,'title':'Title 3','body':'Body 3','publishdate':'2020-11-04T00:00:00Z','expiredate':'2020-11-07T00:00:00Z'}]";
-			IEnumerable<Article> expected = Enumerable.Range( 1, 3 ).Select( CreateArticle );
-			IEnumerable<Article> actual = JsonConvert.DeserializeObject<IEnumerable<Article>>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: Enumerable.Range( 1, 3 ).Select( CreateArticle ),
+				actual: JsonConvert.DeserializeObject<IEnumerable<Article>>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
 			string json = "{'expiredate':'2020-11-03T00:00:00Z','title':'Title 1','id':1,'publishdate':'2020-11-02T00:00:00Z','body':'Body 1'}";
-			Article expected = CreateArticle( 1 );
-			Article actual = JsonConvert.DeserializeObject<Article>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: CreateArticle( 1 ),
+				actual: JsonConvert.DeserializeObject<Article>( json )
+			);
 		}
 
 		[Fact]

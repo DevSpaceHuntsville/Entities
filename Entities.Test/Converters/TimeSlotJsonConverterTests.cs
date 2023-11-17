@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Xunit;
+﻿using Newtonsoft.Json;
 
 namespace DevSpace.Common.Entities.Test {
 	public class TimeSlotJsonConverterTests {
 		[Fact]
 		public void JsonDeserializer() {
 			string json = "[{'id':1,'starttime':'2020-11-02T00:00:00Z','endtime':'2020-11-02T01:00:00Z'},{'id':2,'starttime':'2020-11-03T00:00:00Z','endtime':'2020-11-03T02:00:00Z'},{'id':3,'starttime':'2020-11-04T00:00:00Z','endtime':'2020-11-04T03:00:00Z'}]";
-			IEnumerable<TimeSlot> expected = Enumerable.Range( 1, 3 ).Select( CreateTimeSlot );
-			IEnumerable<TimeSlot> actual = JsonConvert.DeserializeObject<IEnumerable<TimeSlot>>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: Enumerable.Range( 1, 3 ).Select( CreateTimeSlot ),
+				actual: JsonConvert.DeserializeObject<IEnumerable<TimeSlot>>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonDeserializer_ItemsOutOfOrder() {
 			string json = "{'endtime':'2020-11-02T01:00:00Z','id':1,'starttime':'2020-11-02T00:00:00Z'}";
-			TimeSlot expected = CreateTimeSlot( 1 );
-			TimeSlot actual = JsonConvert.DeserializeObject<TimeSlot>( json );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: CreateTimeSlot( 1 ),
+				actual: JsonConvert.DeserializeObject<TimeSlot>( json )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingNone() {
-			IEnumerable<TimeSlot> data = Enumerable.Range( 1, 3 ).Select( CreateTimeSlot );
-			string expected = "[{\"id\":1,\"starttime\":\"2020-11-02T00:00:00Z\",\"endtime\":\"2020-11-02T01:00:00Z\"},{\"id\":2,\"starttime\":\"2020-11-03T00:00:00Z\",\"endtime\":\"2020-11-03T02:00:00Z\"},{\"id\":3,\"starttime\":\"2020-11-04T00:00:00Z\",\"endtime\":\"2020-11-04T03:00:00Z\"}]";
-			string actual = JsonConvert.SerializeObject( data );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected: """[{"id":1,"starttime":"2020-11-02T00:00:00Z","endtime":"2020-11-02T01:00:00Z"},{"id":2,"starttime":"2020-11-03T00:00:00Z","endtime":"2020-11-03T02:00:00Z"},{"id":3,"starttime":"2020-11-04T00:00:00Z","endtime":"2020-11-04T03:00:00Z"}]""",
+				JsonConvert.SerializeObject( Enumerable.Range( 1, 3 ).Select( CreateTimeSlot ) )
+			);
 		}
 
 		[Fact]
 		public void JsonSerializerFormattingIndented() {
-			IEnumerable<TimeSlot> data = Enumerable.Range( 1, 3 ).Select( CreateTimeSlot );
 			string expected = @"[
   {
     ""id"": 1,
@@ -50,8 +47,13 @@ namespace DevSpace.Common.Entities.Test {
     ""endtime"": ""2020-11-04T03:00:00Z""
   }
 ]";
-			string actual = JsonConvert.SerializeObject( data, Formatting.Indented );
-			Assert.Equal( expected, actual );
+			Assert.Equal(
+				expected,
+				actual: JsonConvert.SerializeObject(
+					Enumerable.Range( 1, 3 ).Select( CreateTimeSlot ),
+					Formatting.Indented
+				)
+			);
 		}
 
 		internal static DateTime ChosenDate =>

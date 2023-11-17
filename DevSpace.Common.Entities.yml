@@ -15,18 +15,25 @@ jobs:
     inputs:
       version: 8.0.x
   - task: DotNetCoreCLI@2
-    displayName: dotnet build
+    displayName: dotnet build -c Release
     inputs:
-      projects: '**/*.csproj'
+      command: build
       arguments: -c Release
   - task: DotNetCoreCLI@2
-    displayName: dotnet test
+    displayName: dotnet test -c Release --no-build
     inputs:
       command: test
+      arguments: -c Release --no-build
+  - task: DotNetCoreCLI@2
+    displayName: dotnet pack -c Release --no-build
+    inputs:
+      command: custom
+      custom: pack
+      arguments: -c Release --no-build
   - task: NuGetCommand@2
     displayName: NuGet push
     inputs:
       command: push
       searchPatternPush: Entities\bin\Release\*.nupkg
-      feedPublish: bf58cb17-b64e-4d1d-aa47-1090a4336e86/1aa5da4a-a967-430f-9c0a-75a8eb669cab
+      feedPublish: $(NuGetFeedId)
       allowPackageConflicts: true

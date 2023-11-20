@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Xunit;
+﻿using System.Reflection;
 using Xunit.Sdk;
 
 namespace DevSpace.Common.Entities.Test.Helpers {
@@ -39,8 +36,9 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			T different = GetDifferentEntity( original );
 
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
-				T withed = mi.Invoke( original, new object[] { fi.GetValue( different ) } ) as T;
+				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) )
+					?? throw new XunitException( $"Could not fiend field to match {mi.Name}" );
+				T? withed = mi.Invoke( original, new object?[] { fi.GetValue( different ) } ) as T;
 
 				Assert.False(
 					ReferenceEquals( original, withed ),
@@ -79,7 +77,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 		}
 
 		public static void ObjectEquals<T>() where T : class {
-			T actual = GetRandomEntity<T>() as T;
+			T actual = GetRandomEntity<T>();
 			Assert.False( actual.Equals( null ) );
 			Assert.False( actual.Equals( new object() ) );
 		}
@@ -87,7 +85,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 		public static void ObjectGetHashCode<T>() where T : class {
 			T original = GetRandomEntity<T>();
 			T different = GetDifferentEntity( original );
-			T copy = UseCopyConstructor<T>( original );
+			T copy = UseCopyConstructor( original );
 
 			AssertEqual(
 				original.GetHashCode(),
@@ -102,11 +100,12 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			);
 
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
+				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) )
+					?? throw new XunitException( $"Could not fiend field to match {mi.Name}" );
 
 				AssertNotEqual(
 					original.GetHashCode(),
-					mi.Invoke( original, new object[] { fi.GetValue( different ) } ).GetHashCode(),
+					mi.Invoke( original, new object?[] { fi.GetValue( different ) } )?.GetHashCode(),
 					$"GetHashCode: Changed {fi.Name} did not get new value"
 				);
 			}
@@ -115,32 +114,32 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 		public static void IEquatableEquals<T>() where T : class {
 			// left.Equals( null ) is false
 			T left = GetRandomEntity<T>();
-			Assert.False( left.Equals( (T)null ) );
+			Assert.False( left is null );
 
 			// relf-reference is true
 			Assert.True( left.Equals( left ) );
 
 			// Above cases don't force hash code creation
-			Assert.Null(
-				typeof( T )
-					.GetField( "_hash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance )
-					.GetValue( left )
-			);
+			FieldInfo hashFieldInfo = typeof( T )
+				.GetField( "_hash", BindingFlags.NonPublic | BindingFlags.Instance )
+				?? throw new XunitException( $"Could not find private _hash field" );
+
+			Assert.Null( hashFieldInfo.GetValue( left ) );
 
 			// hash code short circuit
-			T right = UseCopyConstructor<T>( left );
-			typeof( T )
-				.GetField( "_hash", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance )
-				.SetValue( right, left.GetHashCode() / 2 );
+			T right = UseCopyConstructor( left );
+			hashFieldInfo.SetValue( right, left.GetHashCode() / 2 );
 			Assert.False( left.Equals( right ) );
 
 			// All values checked
 			T different = GetDifferentEntity( left );
-			right = UseCopyConstructor<T>( left );
-			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) );
+			right = UseCopyConstructor( left );
+			foreach( MethodInfo witherMethodInfo in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
+				FieldInfo fi = typeof( T ).GetField( witherMethodInfo.Name.Substring( 4 ) )
+					?? throw new XunitException( $"Could not fiend field to match {witherMethodInfo.Name}" );
 
-				T asdf = mi.Invoke( left, new object[] { fi.GetValue( different ) } ) as T;
+				T asdf = witherMethodInfo.Invoke( left, new object?[] { fi.GetValue( different ) } ) as T
+					?? throw new XunitException( $"Wither returned null value" );
 				asdf.SetPrivateField( "_hash", left.GetPrivateField( "_hash" ) );
 
 				Assert.False(
@@ -161,15 +160,16 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 					.GetMethod(
 						"op_Equality",
 						BindingFlags.Public | BindingFlags.Static
-					);
+					)
+					?? throw new XunitException( $"Could not find op_Equality" );
 
-			Assert.True( (bool)op.Invoke( null, new object[] { null, null } ), "null == null was false" );
-			Assert.True( (bool)op.Invoke( null, new object[] { left, left } ), "left == left was false" );
-			Assert.True( (bool)op.Invoke( null, new object[] { left, copy } ), "left == copy was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { null, null } ) ?? false, "null == null was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { left, left } ) ?? false, "left == left was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { left, copy } ) ?? false, "left == copy was false" );
 
-			Assert.False( (bool)op.Invoke( null, new object[] { left, null } ), "left == null was true" );
-			Assert.False( (bool)op.Invoke( null, new object[] { null, right } ), "null == right was true" );
-			Assert.False( (bool)op.Invoke( null, new object[] { left, right } ), "left == right was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { left, null } )  ?? true, "left == null was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { null, right } ) ?? true, "null == right was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { left, right } ) ?? true, "left == right was true" );
 		}
 
 		public static void OperatorNotEquals<T>() where T : class {
@@ -183,18 +183,19 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 					.GetMethod(
 						"op_Inequality",
 						BindingFlags.Public | BindingFlags.Static
-					);
+					)
+					?? throw new XunitException( $"Could not find op_Inequality" );
 
-			Assert.False( (bool)op.Invoke( null, new object[] { null, null } ), "null != null was true" );
-			Assert.False( (bool)op.Invoke( null, new object[] { left, left } ), "left != left was true" );
-			Assert.False( (bool)op.Invoke( null, new object[] { left, copy } ), "left != copy was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { null, null } ) ?? true, "null != null was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { left, left } ) ?? true, "left != left was true" );
+			Assert.False( (bool?)op.Invoke( null, new object?[] { left, copy } ) ?? true, "left != copy was true" );
 
-			Assert.True( (bool)op.Invoke( null, new object[] { left, null } ) , "left != null was false" );
-			Assert.True( (bool)op.Invoke( null, new object[] { null, right } ), "null != right was false" );
-			Assert.True( (bool)op.Invoke( null, new object[] { left, right } ), "left != right was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { left, null } )  ?? false, "left != null was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { null, right } ) ?? false, "null != right was false" );
+			Assert.True( (bool?)op.Invoke( null, new object?[] { left, right } ) ?? false, "left != right was false" );
 		}
 
-		private static void AssertEqual( object expected, object actual, string userMessage ) {
+		private static void AssertEqual( object? expected, object? actual, string userMessage ) {
 			try {
 				Assert.Equal( expected, actual );
 			} catch( EqualException ) {
@@ -206,13 +207,13 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			}
 		}
 
-		private static void AssertNotEqual( object expected, object actual, string userMessage ) {
+		private static void AssertNotEqual( object? expected, object? actual, string userMessage ) {
 			try {
 				Assert.NotEqual( expected, actual );
 			} catch( NotEqualException ) {
 				throw NotEqualException.ForEqualValues(
-					expected.ToString(),
-					actual.ToString(),
+					expected?.ToString() ?? "<NULL>",
+					actual?.ToString() ?? "<NULL>",
 					userMessage
 				);
 			}
@@ -232,8 +233,8 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			T different = GetRandomEntity<T>();
 
 			foreach( FieldInfo fi in typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance ) ) {
-				object originalValue = fi.GetValue( original );
-				object differentValue = fi.GetValue( different );
+				object? originalValue = fi.GetValue( original );
+				object? differentValue = fi.GetValue( different );
 
 				if( typeof( bool? ) == fi.FieldType ) {
 					bool? o = (bool?)originalValue;
@@ -248,8 +249,10 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 					}
 				}
 
-				MethodInfo with = typeof( T ).GetMethod( $"With{fi.Name}" );
-				different = with.Invoke( different, new object[] { differentValue } ) as T;
+				MethodInfo with = typeof( T ).GetMethod( $"With{fi.Name}" )
+					?? throw new XunitException( $"Could not find wither to match field {fi.Name}" );
+				different = with.Invoke( different, new object?[] { differentValue } ) as T
+					?? throw new XunitException( $"Wither returned null value" );
 			}
 
 			return different;

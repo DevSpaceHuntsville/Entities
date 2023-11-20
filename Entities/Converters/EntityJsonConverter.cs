@@ -8,7 +8,7 @@ namespace DevSpace.Common.Entities {
 		public override bool CanConvert( Type objectType ) => 
 			objectType.IsAssignableFrom( typeof( T ) );
 
-		private T With( T target, string prop, object value ) =>
+		private static T With( T target, string prop, object value ) =>
 			(T)target
 				.GetType()
 				.GetMethod( $"With{prop}", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase )

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace DevSpace.Common.Entities.Test.Helpers {
+﻿namespace DevSpace.Common.Entities.Test.Helpers {
 	public static class RandomExtensions {
 		public static bool NextBool( this Random random ) =>
 			random.NextDouble() < 0.5;
@@ -29,7 +26,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 				Enumerable
 					.Range( 0, length )
 					.Select( i => random.Next( 0x61, 0x7B ) )
-					.Select( i => Convert.ToChar( i ) )
+					.Select( Convert.ToChar )
 			);
 		}
 	}

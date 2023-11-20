@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace DevSpace.Common.Entities.Test.Helpers {
+﻿namespace DevSpace.Common.Entities.Test.Helpers {
 	public abstract class StandardEntityTests<T> where T : class {
 		[Fact]
 		public virtual void CopyCtor() =>

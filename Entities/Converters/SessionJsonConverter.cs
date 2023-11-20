@@ -9,7 +9,8 @@ namespace DevSpace.Common.Entities {
 
 		public override object ReadJson( JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer ) {
 			Session output = existingValue as Session ?? new Session();
-			Func<JsonConverter, Type, object, object> f = ( c, t, i ) => c.ReadJson( reader, t, i, serializer );
+			object CallBaseConverter( JsonConverter c, Type t, object o ) =>
+				c.ReadJson( reader, t, o, serializer );
 
 			while( reader.Read() ) {
 				switch( reader.TokenType ) {
@@ -44,13 +45,13 @@ namespace DevSpace.Common.Entities {
 
 							case "LEVEL":
 								output = output.WithLevel(
-									f( new TagJsonConverter(), typeof( Tag ), output.Level ) as Tag
+									CallBaseConverter( new TagJsonConverter(), typeof( Tag ), output.Level ) as Tag
 								);
 								break;
 
 							case "CATEGORY":
 								output = output.WithCategory(
-									f( new TagJsonConverter(), typeof( Tag ), output.Category ) as Tag
+									CallBaseConverter( new TagJsonConverter(), typeof( Tag ), output.Category ) as Tag
 								);
 								break;
 
@@ -73,7 +74,7 @@ namespace DevSpace.Common.Entities {
 
 										case JsonToken.StartObject:
 											tags.Add(
-												f( new TagJsonConverter(), typeof( Tag ), output.Category ) as Tag
+												CallBaseConverter( new TagJsonConverter(), typeof( Tag ), output.Category ) as Tag
 											);
 											break;
 
@@ -89,13 +90,13 @@ namespace DevSpace.Common.Entities {
 
 							case "TIMESLOT":
 								output = output.WithTimeSlot(
-									f( new TimeSlotJsonConverter(), typeof( TimeSlot ), output.TimeSlot ) as TimeSlot
+									CallBaseConverter( new TimeSlotJsonConverter(), typeof( TimeSlot ), output.TimeSlot ) as TimeSlot
 								);
 								break;
 
 							case "ROOM":
 								output = output.WithRoom(
-									f( new RoomJsonConverter(), typeof( Room ), output.Room ) as Room
+									CallBaseConverter( new RoomJsonConverter(), typeof( Room ), output.Room ) as Room
 								);
 								break;
 

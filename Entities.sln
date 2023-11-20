@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities.Test", "Entities.T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EECA0230-89FF-4486-901E-165AD731474D}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		DevSpace.Common.Entities.Dev.yml = DevSpace.Common.Entities.Dev.yml
 		DevSpace.Common.Entities.yml = DevSpace.Common.Entities.yml

@@ -131,7 +131,7 @@ namespace DevSpace.Common.Entities.Test {
 				sessionizeid: 0x3 == ( i & 0x3 ) ? (int?)i : null
 			);
 
-		private string SessionToJson( Session x ) =>
+		private static string SessionToJson( Session x ) =>
 			$"{{" +
 				$"'id':{x.Id}," +
 				$"'userId':{x.UserId}," +

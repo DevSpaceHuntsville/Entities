@@ -66,7 +66,12 @@ namespace DevSpace.Common.Entities {
 									break;
 								}
 
+// Justification: This wanted me to use List<Tag> tags = [];
+//	I would never do that.
+//	Since it's a new feature, I can't find where to fix it in the editorconfig yet
+#pragma warning disable IDE0028 // Simplify collection initialization
 								List<Tag> tags = new List<Tag>();
+#pragma warning restore IDE0028 // Simplify collection initialization
 								while( reader.Read() ) {
 									switch( reader.TokenType ) {
 										case JsonToken.StartArray:

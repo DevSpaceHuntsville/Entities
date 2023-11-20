@@ -8,7 +8,8 @@ namespace DevSpace.Common.Entities {
 
 		public override object ReadJson( JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer ) {
 			Sponsor output = existingValue as Sponsor ?? new Sponsor();
-			Func<JsonConverter, object, object> f = ( c, i ) => c.ReadJson( reader, i.GetType(), i, serializer );
+			object CallBaseConverter( JsonConverter c, object o ) =>
+				c.ReadJson( reader, o.GetType(), o, serializer );
 
 			while( reader.Read() ) {
 				switch( reader.TokenType ) {
@@ -23,19 +24,19 @@ namespace DevSpace.Common.Entities {
 
 							case "SPONSOREDEVENT":
 								output = output.WithSponsoredEvent(
-									f( new EventJsonConverter(), output.SponsoredEvent ) as Event
+									CallBaseConverter( new EventJsonConverter(), output.SponsoredEvent ) as Event
 								);
 								break;
 
 							case "SPONSORINGCOMPANY":
 								output = output.WithSponsoringCompany(
-									f( new CompanyJsonConverter(), output.SponsoringCompany ) as Company
+									CallBaseConverter( new CompanyJsonConverter(), output.SponsoringCompany ) as Company
 								);
 								break;
 
 							case "SPONSORSHIPLEVEL":
 								output = output.WithSponsorshipLevel(
-									f( new SponsorLevelJsonConverter(), output.SponsorshipLevel ) as SponsorLevel
+									CallBaseConverter( new SponsorLevelJsonConverter(), output.SponsorshipLevel ) as SponsorLevel
 								);
 								break;
 

@@ -2,6 +2,11 @@
 using Xunit.Sdk;
 
 namespace DevSpace.Common.Entities.Test.Helpers {
+	[System.Diagnostics.CodeAnalysis.SuppressMessage(
+		"Style",
+		"IDE0300:Simplify collection initialization",
+		Justification = "There isn't a good way to turn this off yet"
+	)]
 	internal static class StandardTests {
 		public static void CopyConstructor<T>() where T : class {
 			T original = GetRandomEntity<T>();
@@ -36,7 +41,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			T different = GetDifferentEntity( original );
 
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) )
+				FieldInfo fi = typeof( T ).GetField( mi.Name[4..] )
 					?? throw new XunitException( $"Could not fiend field to match {mi.Name}" );
 				T? withed = mi.Invoke( original, new object?[] { fi.GetValue( different ) } ) as T;
 
@@ -100,7 +105,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			);
 
 			foreach( MethodInfo mi in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( mi.Name.Substring( 4 ) )
+				FieldInfo fi = typeof( T ).GetField( mi.Name[4..] )
 					?? throw new XunitException( $"Could not fiend field to match {mi.Name}" );
 
 				AssertNotEqual(
@@ -135,7 +140,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 			T different = GetDifferentEntity( left );
 			right = UseCopyConstructor( left );
 			foreach( MethodInfo witherMethodInfo in typeof( T ).GetMethods().Where( x => x.Name.StartsWith( "With" ) ) ) {
-				FieldInfo fi = typeof( T ).GetField( witherMethodInfo.Name.Substring( 4 ) )
+				FieldInfo fi = typeof( T ).GetField( witherMethodInfo.Name[4..] )
 					?? throw new XunitException( $"Could not fiend field to match {witherMethodInfo.Name}" );
 
 				T asdf = witherMethodInfo.Invoke( left, new object?[] { fi.GetValue( different ) } ) as T
@@ -238,7 +243,7 @@ namespace DevSpace.Common.Entities.Test.Helpers {
 
 				if( typeof( bool? ) == fi.FieldType ) {
 					bool? o = (bool?)originalValue;
-					differentValue = o.HasValue ? !o.Value : true;
+					differentValue = !o.GetValueOrDefault( false );
 				} else {
 					while(
 						originalValue?.Equals( differentValue )

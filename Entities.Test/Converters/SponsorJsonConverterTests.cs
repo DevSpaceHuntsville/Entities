@@ -90,7 +90,7 @@ namespace DevSpace.Common.Entities.Test {
 				sponsorshiplevel: SponsorLevelJsonConverterTests.CreateSponsorLevel( i )
 			);
 
-		private string SponsorToJson( Sponsor x ) =>
+		private static string SponsorToJson( Sponsor x ) =>
 			$"{{" +
 				$"'id':{x.Id}," +
 				$"'sponsoredEvent':{EventJsonConverterTests.EventToJson( x.SponsoredEvent )}," +

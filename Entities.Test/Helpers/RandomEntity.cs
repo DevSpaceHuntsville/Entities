@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DevSpace.Common.Entities.Test.Helpers {
 	public static class RandomEntity {
-		private static Random random = new Random();
+		private static readonly Random random = new Random();
 
 		public static Article Article =>
 			new Article(

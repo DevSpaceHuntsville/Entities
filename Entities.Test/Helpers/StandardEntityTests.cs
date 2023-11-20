@@ -16,8 +16,12 @@
 		public virtual void ObjectGetHashCode() =>
 			StandardTests.ObjectGetHashCode<T>();
 
+// Justification: This is being flagged here because it's abstract
+//	Thus, the issue is that the super classes don't mark it
+#pragma warning disable xUnit1013 // Public method should be marked as test
 		[Fact]
 		public abstract void ObjectToString();
+#pragma warning restore xUnit1013 // Public method should be marked as test
 
 		[Fact]
 		public virtual void IEquatableEquals() =>

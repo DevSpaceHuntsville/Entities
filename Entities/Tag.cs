@@ -34,7 +34,7 @@ namespace DevSpace.Common.Entities {
 		private const int _bigPrime = 13327;
 		private const int _littlePrime = 4903;
 		public override int GetHashCode() {
-			Func<object, int> SafeHashCode = ( obj ) =>
+			static int SafeHashCode( object obj ) =>
 				obj is object ish
 				? ish.GetHashCode()
 				: 0;
@@ -55,7 +55,7 @@ namespace DevSpace.Common.Entities {
 			this.Text;
 
 		public bool Equals( Tag that ) {
-			if( ReferenceEquals( that, null ) )
+			if( that is null )
 				return false;
 
 			return
@@ -68,8 +68,8 @@ namespace DevSpace.Common.Entities {
 		}
 
 		public static bool operator ==( Tag left, Tag right ) =>
-			ReferenceEquals( left, null )
-				? ReferenceEquals( right, null )
+			left is null
+				? right is null
 				: left.Equals( right );
 
 		public static bool operator !=( Tag left, Tag right ) =>

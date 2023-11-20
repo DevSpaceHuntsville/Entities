@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-	<VersionPrefix>0.5.1</VersionPrefix>
+	<VersionPrefix>0.5.2</VersionPrefix>
     <RepositoryUrl>https://github.com/DevSpaceHuntsville/Entities</RepositoryUrl>
     <PackageId>DevSpace.Common.Entities</PackageId>
     <AssemblyName>DevSpace.Common.Entities</AssemblyName>
@@ -15,8 +15,8 @@
     <PackageProjectUrl>https://dev.azure.com/devspacehuntsville/DevSpace</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Entities</PackageTags>
-    <AssemblyVersion>0.5.1.0</AssemblyVersion>
-    <FileVersion>0.5.1.0</FileVersion>
+    <AssemblyVersion>0.5.2.0</AssemblyVersion>
+    <FileVersion>0.5.2.0</FileVersion>
     <PackageReleaseNotes>Updated to dotnet8</PackageReleaseNotes>
   </PropertyGroup>
 

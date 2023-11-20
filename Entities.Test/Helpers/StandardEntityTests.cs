@@ -1,4 +1,9 @@
 ﻿namespace DevSpace.Common.Entities.Test.Helpers {
+	[System.Diagnostics.CodeAnalysis.SuppressMessage(
+		"CodeQuality",
+		"IDE0079:Remove unnecessary suppression",
+		Justification = "Suppression is in xUnit Analyzer. Line 24 for details"
+	)]
 	public abstract class StandardEntityTests<T> where T : class {
 		[Fact]
 		public virtual void CopyCtor() =>
